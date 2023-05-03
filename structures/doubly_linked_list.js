@@ -1,27 +1,29 @@
 class Node {
     constructor(val) {
         this.val = val;
+        this.prev = null;
         this.next = null;
     }
 }
 
-class LinkedList {
+class DoublyLinkedList {
     constructor() {
-        this.length = 0;
         this.head = null;
-        this.tail = null;
+        this.tail = this.head;
+        this.length = 0;
     }
 
     // Big O (1)
     push(val) {
         let newNode = new Node(val);
 
-        if (!this.tail) {
+        if (!this.head) {
             this.head = newNode;
             this.tail = this.head;
         } else {
             this.tail.next = newNode;
-            this.tail = newNode;
+            newNode.prev = this.tail;
+            this.tail = this.tail.next;
         }
 
         this.length++;
@@ -29,28 +31,21 @@ class LinkedList {
         return this;
     }
 
-    // Big O (n)
+    // Big O (1)
     pop() {
         if (this.head) {
-            // If only 1 node, reinitialise empty list
             if (this.length === 1) {
                 this.head = null;
                 this.tail = this.head;
                 this.length = 0;
             } else {
-                let n = this.head;
-                let newTail = n;
-                // Find the last node
-                while (n.next) {
-                    newTail = n;
-                    n = n.next;
-                }
-
-                // newTail holds ref to node before the tail
-                this.tail = newTail;
+                let poppedNode = this.tail;
+                this.tail = poppedNode.prev;
                 this.tail.next = null;
+                // Even though now unreachable, remove ref for completeness
+                poppedNode.prev = null;
                 this.length--;
-            }
+            }    
         }
 
         return this;
@@ -59,15 +54,18 @@ class LinkedList {
     // Big O (1)
     shift() {
         if (this.head) {
-            // If only 1 node, reinitialise empty list
             if (this.length === 1) {
                 this.head = null;
                 this.tail = this.head;
                 this.length = 0;
             } else {
-                this.head = this.head.next;
+                let shiftedNode = this.head;
+                this.head = shiftedNode.next;
+                this.head.prev = null;
+                // Even though now unreachable, remove ref for completeness
+                shiftedNode.next = null;
                 this.length--;
-            }
+            }    
         }
 
         return this;
@@ -80,12 +78,13 @@ class LinkedList {
         if (!this.head) {
             this.head = newNode;
             this.tail = this.head;
+            this.length = 1;
         } else {
+            this.head.prev = newNode;
             newNode.next = this.head;
             this.head = newNode;
+            this.length++;
         }
-
-        this.length++;
 
         return this;
     }
@@ -94,16 +93,28 @@ class LinkedList {
     get(idx) {
         if (idx < 0 || idx > this.length - 1) {
             return undefined;
+        } else {
+            // Is idx closer to head or tail ?
+            if (idx <= this.length / 2) {
+                // Nearer the head
+                let n = this.head;
+
+                for (let i = 0; i < idx; i++) {
+                    n = n.next;
+                }
+
+                return n;
+            } else {
+                // Nearer the tail
+                let n = this.tail;
+
+                for (let i = this.length - 1; i > this.length - 1 - idx; i--) {
+                    n = n.prev;
+                }    
+
+                return n;
+            }
         }
-
-        let n = this.head;
-
-        for (let i = 0; i < idx; i++) {
-            n = n.next;
-        }
-
-        // console.log(n);
-        return n;
     }
 
     // Big O (n)
@@ -122,6 +133,7 @@ class LinkedList {
     insert(idx, val) {
         if (idx < 0 || idx > this.length) {
             return false;
+
         }
 
         if (idx === 0) {
@@ -130,12 +142,16 @@ class LinkedList {
             this.push(val);
         } else {
             let newNode = new Node(val);
-            // Get the node prior to the idx given
-            let prior = this.get(idx - 1);
-            let n = prior.next;
 
-            newNode.next = n;
-            prior.next = newNode;
+            // Find the node at the index before where we are inserting a new node
+            let before = this.get(idx - 1);
+            let after = before.next;
+            // Set prev refs
+            after.prev = newNode;
+            newNode.prev = before;
+            // Set next refs
+            newNode.next = after;
+            before.next = newNode;
             this.length++;
         }
 
@@ -144,7 +160,7 @@ class LinkedList {
 
     // Big O (n)
     remove(idx) {
-        if (idx < 0 || idx > this.length) {
+        if (idx < 0 || idx > this.length - 1) {
             return false;
         }
 
@@ -153,40 +169,21 @@ class LinkedList {
         } else if (idx === this.length - 1) {
             this.pop();
         } else {
-            // Get the node prior to the idx given
-            let prior = this.get(idx - 1);
-            prior.next = prior.next.next;
+            // Find the node at the index before where we are removing a node
+            let before = this.get(idx - 1);
+            let removedNode = before.next;
+            let after = removedNode.next;
 
+            after.prev = before;
+            before.next = after;
+
+            // Remove refs from removed node
+            removedNode.next = null;
+            removedNode.prev = null;
             this.length--;
         }
 
         return true;
-    }
-
-    // Big O (n)
-    reverse() {
-        // Only need to do anything if we have at least 2 nodes
-        if (this.length > 1) {
-            // Start by swapping head and tail
-            let node = this.head;
-            this.head = this.tail;
-            this.tail = node;
-
-            // So that tail.next ends up null
-            let prev = null;
-
-            for (let i = 0; i < this.length; i++) {
-                // Adjust node.next
-                let next = node.next;
-                node.next = prev;
-
-                // Adjust node
-                prev = node;
-                node = next;
-            }
-        }
-
-        return this;
     }
 
     print() {
@@ -198,9 +195,10 @@ class LinkedList {
         }
         return vals;
     }
+
 }
 
-let list = new LinkedList();
+let list = new DoublyLinkedList();
 list.push(23);
 list.push(45);
 list.push(90);
@@ -242,6 +240,3 @@ list.remove(0);
 list.remove(4);
 list.remove(2);
 console.log(list.print());
-list.reverse();
-console.log(list.print());
-
