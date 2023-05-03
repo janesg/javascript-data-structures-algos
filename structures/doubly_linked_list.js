@@ -54,21 +54,23 @@ class DoublyLinkedList {
     // Big O (1)
     shift() {
         if (this.head) {
+            let shiftedNode = this.head;
+
             if (this.length === 1) {
                 this.head = null;
                 this.tail = this.head;
                 this.length = 0;
             } else {
-                let shiftedNode = this.head;
                 this.head = shiftedNode.next;
                 this.head.prev = null;
                 // Even though now unreachable, remove ref for completeness
                 shiftedNode.next = null;
                 this.length--;
             }    
+            return shiftedNode;
+        } else {
+            return undefined;
         }
-
-        return this;
     }
 
     // Big O (1)
@@ -108,7 +110,7 @@ class DoublyLinkedList {
                 // Nearer the tail
                 let n = this.tail;
 
-                for (let i = this.length - 1; i > this.length - 1 - idx; i--) {
+                for (let i = this.length - 1; i > idx; i--) {
                     n = n.prev;
                 }    
 
@@ -186,6 +188,29 @@ class DoublyLinkedList {
         return true;
     }
 
+    reverse() {
+        if (this.length > 1) {
+            // Swap head and tail
+            let currentNode = this.head;
+            this.head = this.tail;
+            this.tail = currentNode;
+    
+            let nextNode = null;
+            let prevNode = null;
+
+            for(let i = 0; i < this.length; i++) {
+                nextNode = currentNode.next;
+                currentNode.next = prevNode;
+                currentNode.prev = nextNode;
+    
+                prevNode = currentNode;
+                currentNode = nextNode;
+            }
+        }
+
+        return this;
+    }
+
     print() {
         let vals = [];
         let n = this.head;
@@ -239,4 +264,6 @@ console.log(list.print());
 list.remove(0);
 list.remove(4);
 list.remove(2);
+console.log(list.print());
+list.reverse();
 console.log(list.print());
