@@ -6,7 +6,7 @@ class Node {
 }
 
 // Uses a MinBinaryHeap : based on priority (where priority of 1 is the highest)
-class PriorityQueue {
+export class PriorityQueue {
     constructor() {
         this.queue = [];
     }
@@ -114,22 +114,25 @@ class PriorityQueue {
             idx = swapIdx;
         }
     }
+
+    isEmpty() {
+        return this.queue.length === 0;
+    }
 }
 
-let queue = new PriorityQueue();
-queue.enqueue("Man City", 3);
-queue.enqueue("Wolves", 5);
-queue.enqueue("Spurs", 7);
-queue.enqueue("Newcastle", 2);
-queue.enqueue("Man Utd", 3);
-queue.enqueue("Arsenal");
-queue.enqueue("Chelsea", 5);
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-queue.dequeue();
-
+// let queue = new PriorityQueue();
+// queue.enqueue("Man City", 3);
+// queue.enqueue("Wolves", 5);
+// queue.enqueue("Spurs", 7);
+// queue.enqueue("Newcastle", 2);
+// queue.enqueue("Man Utd", 3);
+// queue.enqueue("Arsenal");
+// queue.enqueue("Chelsea", 5);
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();
+// queue.dequeue();

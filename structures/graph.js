@@ -203,4 +203,4 @@ graph.print();
 
 console.log(`Depth First (Recursive) : ${graph.depthFirstTraversalRecursive('A')}`);
 console.log(`Depth First (Iterative) : ${graph.depthFirstTraversalIterative('A')}`);
-console.log(`Breadth First : ${graph.breadthFirstTraversal('A')}`);
+console.log(`Breadth First           : ${graph.breadthFirstTraversal('A')}`);
