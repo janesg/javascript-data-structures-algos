@@ -3,6 +3,8 @@
 // the sequence of whole numbers 1, 1, 2, 3, 5, 8, ... which starts with 1 and 1, and 
 // where every number thereafter is equal to the sum of the previous two numbers.
 
+// Big O of this is terrible; O[2^n] which is exponential
+//  - this is due to continuously having to recalculate fib for same numbers
 function fib(num) {
     if (num === 1 || num === 2) {
         return 1;

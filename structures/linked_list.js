@@ -31,7 +31,11 @@ class LinkedList {
 
     // Big O (n)
     pop() {
+        let poppedVal = undefined;
+
         if (this.head) {
+            poppedVal = this.tail.val;
+
             // If only 1 node, reinitialise empty list
             if (this.length === 1) {
                 this.head = null;
@@ -53,7 +57,7 @@ class LinkedList {
             }
         }
 
-        return this;
+        return poppedVal;
     }
 
     // Big O (1)
@@ -205,13 +209,13 @@ list.push(23);
 list.push(45);
 list.push(90);
 console.log(list.print());
-list.pop();
+console.log(`Popped value: ${list.pop()}`);
 console.log(list.print());
-list.pop();
+console.log(`Popped value: ${list.pop()}`);
 console.log(list.print());
-list.pop();
+console.log(`Popped value: ${list.pop()}`);
 console.log(list.print());
-list.pop();
+console.log(`Popped value: ${list.pop()}`);
 console.log(list.print());
 list.push(67);
 list.push(7);
