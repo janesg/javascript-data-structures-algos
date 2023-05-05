@@ -50,6 +50,7 @@ class HashTable {
             }
         }
 
+        // Remove any duplicate values
         return [...new Set([...values])];
     }
 }
